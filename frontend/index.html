@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Policy Rule Review</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Documents">
+        <div class="brand">
+          <p class="eyebrow">Rule Extraction</p>
+          <h1>Policy Review</h1>
+        </div>
+
+        <div class="sidebar-section">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="search" placeholder="Subject, value, clause">
+        </div>
+
+        <div class="sidebar-section">
+          <label for="categoryFilter">Category</label>
+          <select id="categoryFilter">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+
+        <nav id="documentNav" class="document-nav" aria-label="Document list"></nav>
+      </aside>
+
+      <main class="workspace">
+        <section class="topbar">
+          <div>
+            <p id="sectionLabel" class="eyebrow">Loading</p>
+            <h2 id="documentTitle">Policy rules</h2>
+          </div>
+          <div class="metrics" aria-label="Rule metrics">
+            <div>
+              <span id="ruleCount">0</span>
+              <small>Rules</small>
+            </div>
+            <div>
+              <span id="warningCount">0</span>
+              <small>Warnings</small>
+            </div>
+          </div>
+        </section>
+
+        <section id="warningPanel" class="warning-panel" hidden></section>
+
+        <section class="content-grid">
+          <div class="rule-list-wrap">
+            <div class="table-header">
+              <span>Clause</span>
+              <span>Subject</span>
+              <span>Constraint</span>
+              <span>Scope</span>
+            </div>
+            <div id="ruleList" class="rule-list" role="listbox" aria-label="Extracted rules"></div>
+          </div>
+
+          <aside class="detail-panel" aria-label="Rule details">
+            <div class="detail-heading">
+              <p id="detailCategory" class="eyebrow">Select a rule</p>
+              <h3 id="detailSubject">No rule selected</h3>
+            </div>
+
+            <dl class="detail-grid">
+              <div>
+                <dt>Operator</dt>
+                <dd id="detailOperator">-</dd>
+              </div>
+              <div>
+                <dt>Value</dt>
+                <dd id="detailValue">-</dd>
+              </div>
+              <div>
+                <dt>Unit</dt>
+                <dd id="detailUnit">-</dd>
+              </div>
+              <div>
+                <dt>Scope</dt>
+                <dd id="detailScope">-</dd>
+              </div>
+            </dl>
+
+            <div class="detail-block">
+              <h4>Condition</h4>
+              <pre id="detailCondition">None</pre>
+            </div>
+
+            <div class="detail-block">
+              <h4>Exception</h4>
+              <pre id="detailException">None</pre>
+            </div>
+
+            <div class="detail-block">
+              <h4>Source Text</h4>
+              <p id="detailRaw" class="source-text">Select a rule to inspect the source clause.</p>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
