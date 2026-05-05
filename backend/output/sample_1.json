@@ -29,7 +29,7 @@
       "source_document": "sample_1",
       "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
       "clause": "b",
-      "category": "eligibility",
+      "category": "concentration_limit",
       "subject": "maximum coverage amount",
       "operator": "<=",
       "value": 2000000,
@@ -50,17 +50,14 @@
       "source_document": "sample_1",
       "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
       "clause": "c",
-      "category": "eligibility | concentration_limit",
+      "category": "eligibility",
       "subject": "credit score and portfolio value",
       "operator": ">=",
       "value": 680,
       "unit": "score",
       "scope": "applicant",
       "condition": {
-        "max_portfolio_value_percentage": {
-          "value": 15,
-          "unit": "percent"
-        },
+        "max_portfolio_value_percentage": 15,
         "credit_score_range": {
           "min": 680,
           "max": 700
@@ -89,10 +86,9 @@
       "condition": {
         "co_signer_credit_score": {
           "operator": ">",
-          "value": 750,
-          "unit": "score"
+          "value": 750
         },
-        "exception_ratio": {
+        "alternative_ratio": {
           "value": 45,
           "unit": "percent"
         }

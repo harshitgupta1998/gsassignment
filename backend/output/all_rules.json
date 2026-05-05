@@ -31,7 +31,7 @@
           "source_document": "sample_1",
           "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
           "clause": "b",
-          "category": "eligibility",
+          "category": "concentration_limit",
           "subject": "maximum coverage amount",
           "operator": "<=",
           "value": 2000000,
@@ -52,17 +52,14 @@
           "source_document": "sample_1",
           "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
           "clause": "c",
-          "category": "eligibility | concentration_limit",
+          "category": "eligibility",
           "subject": "credit score and portfolio value",
           "operator": ">=",
           "value": 680,
           "unit": "score",
           "scope": "applicant",
           "condition": {
-            "max_portfolio_value_percentage": {
-              "value": 15,
-              "unit": "percent"
-            },
+            "max_portfolio_value_percentage": 15,
             "credit_score_range": {
               "min": 680,
               "max": 700
@@ -91,10 +88,9 @@
           "condition": {
             "co_signer_credit_score": {
               "operator": ">",
-              "value": 750,
-              "unit": "score"
+              "value": 750
             },
-            "exception_ratio": {
+            "alternative_ratio": {
               "value": 45,
               "unit": "percent"
             }
@@ -205,7 +201,7 @@
           "scope": "portfolio",
           "condition": null,
           "exception": null,
-          "basis": null,
+          "basis": "total portfolio value",
           "raw_text": "No more than 25% of the total portfolio value shall consist of policies originating from any single state.",
           "extraction": {
             "method": "llm",
@@ -219,7 +215,7 @@
           "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
           "clause": "ii",
           "category": "concentration_limit",
-          "subject": "portfolio value with coverage amount",
+          "subject": "portfolio value with high coverage amount",
           "operator": "<=",
           "value": 10,
           "unit": "percent",
@@ -232,7 +228,7 @@
             }
           },
           "exception": null,
-          "basis": null,
+          "basis": "total portfolio value",
           "raw_text": "No more than 10% of the total portfolio value shall consist of policies with a coverage amount exceeding $1,500,000.",
           "extraction": {
             "method": "llm",
@@ -267,7 +263,7 @@
           "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
           "clause": "iv",
           "category": "concentration_limit",
-          "subject": "portfolio value from applicants under 25",
+          "subject": "portfolio value with young applicants",
           "operator": "<=",
           "value": 5,
           "unit": "percent",
@@ -280,7 +276,7 @@
             }
           },
           "exception": null,
-          "basis": null,
+          "basis": "total portfolio value",
           "raw_text": "No more than 5% of the total portfolio value shall consist of policies where the primary applicant is under 25 years of age.",
           "extraction": {
             "method": "llm",
@@ -416,7 +412,7 @@
             "type": "months",
             "value": 3,
             "unit": "months",
-            "related_fee": "annual service fee"
+            "related_to": "annual service fee"
           },
           "raw_text": "Early Termination Fee: If the policy is cancelled within the first 24 months, the applicant shall pay a fee equal to 3 months of the annual service fee.",
           "extraction": {
@@ -483,7 +479,7 @@
       "source_document": "sample_1",
       "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
       "clause": "b",
-      "category": "eligibility",
+      "category": "concentration_limit",
       "subject": "maximum coverage amount",
       "operator": "<=",
       "value": 2000000,
@@ -504,17 +500,14 @@
       "source_document": "sample_1",
       "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
       "clause": "c",
-      "category": "eligibility | concentration_limit",
+      "category": "eligibility",
       "subject": "credit score and portfolio value",
       "operator": ">=",
       "value": 680,
       "unit": "score",
       "scope": "applicant",
       "condition": {
-        "max_portfolio_value_percentage": {
-          "value": 15,
-          "unit": "percent"
-        },
+        "max_portfolio_value_percentage": 15,
         "credit_score_range": {
           "min": 680,
           "max": 700
@@ -543,10 +536,9 @@
       "condition": {
         "co_signer_credit_score": {
           "operator": ">",
-          "value": 750,
-          "unit": "score"
+          "value": 750
         },
-        "exception_ratio": {
+        "alternative_ratio": {
           "value": 45,
           "unit": "percent"
         }
@@ -646,7 +638,7 @@
       "scope": "portfolio",
       "condition": null,
       "exception": null,
-      "basis": null,
+      "basis": "total portfolio value",
       "raw_text": "No more than 25% of the total portfolio value shall consist of policies originating from any single state.",
       "extraction": {
         "method": "llm",
@@ -660,7 +652,7 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "ii",
       "category": "concentration_limit",
-      "subject": "portfolio value with coverage amount",
+      "subject": "portfolio value with high coverage amount",
       "operator": "<=",
       "value": 10,
       "unit": "percent",
@@ -673,7 +665,7 @@
         }
       },
       "exception": null,
-      "basis": null,
+      "basis": "total portfolio value",
       "raw_text": "No more than 10% of the total portfolio value shall consist of policies with a coverage amount exceeding $1,500,000.",
       "extraction": {
         "method": "llm",
@@ -708,7 +700,7 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "iv",
       "category": "concentration_limit",
-      "subject": "portfolio value from applicants under 25",
+      "subject": "portfolio value with young applicants",
       "operator": "<=",
       "value": 5,
       "unit": "percent",
@@ -721,7 +713,7 @@
         }
       },
       "exception": null,
-      "basis": null,
+      "basis": "total portfolio value",
       "raw_text": "No more than 5% of the total portfolio value shall consist of policies where the primary applicant is under 25 years of age.",
       "extraction": {
         "method": "llm",
@@ -846,7 +838,7 @@
         "type": "months",
         "value": 3,
         "unit": "months",
-        "related_fee": "annual service fee"
+        "related_to": "annual service fee"
       },
       "raw_text": "Early Termination Fee: If the policy is cancelled within the first 24 months, the applicant shall pay a fee equal to 3 months of the annual service fee.",
       "extraction": {

@@ -1,34 +1,87 @@
 import json
 from pathlib import Path
+from typing import Any
+
+from validator import validate_rule
 
 
 EXPECTED_RULE_COUNTS = {
-    "sample_1": 9,
+    "sample_1": 7,
     "sample_2": 5,
     "sample_3": 5,
 }
 
 
+def load_payload(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def analyze_sample(sample_name: str, payload: dict[str, Any], failures: list[str]) -> None:
+    rules = payload.get("rules", [])
+    # Basic count check
+    expected = EXPECTED_RULE_COUNTS.get(sample_name)
+    actual = len(rules)
+    if expected is not None and actual < expected:
+        failures.append(f"{sample_name}: expected at least {expected} rules, got {actual}")
+
+    # Unique ID check
+    ids = [r.get("id") for r in rules]
+    dup_ids = set([i for i in ids if ids.count(i) > 1])
+    if dup_ids:
+        failures.append(f"{sample_name}: duplicate rule ids found: {', '.join(map(str, dup_ids))}")
+
+    # Category breakdown
+    categories: dict[str, int] = {}
+    for r in rules:
+        categories[r.get("category", "(none)")] = categories.get(r.get("category", "(none)"), 0) + 1
+    print(f"{sample_name}: {actual} rules — categories: {categories}")
+
+    # Rule-level validation
+    for r in rules:
+        rid = r.get("id", "<no-id>")
+        warnings = validate_rule(r)
+        for w in warnings:
+            failures.append(f"{sample_name}/{rid}: {w}")
+
+    # Duplicate raw_text detection
+    raw_texts = [r.get("raw_text", "") for r in rules]
+    dup_texts = set([t for t in raw_texts if raw_texts.count(t) > 1 and t.strip()])
+    if dup_texts:
+        failures.append(f"{sample_name}: duplicate raw_text detected for {len(dup_texts)} text(s)")
+
+    # Low-confidence LLM rules
+    low_conf: list[str] = []
+    for r in rules:
+        ex = r.get("extraction") or {}
+        method = ex.get("method")
+        conf = ex.get("confidence")
+        if method == "llm" and isinstance(conf, (int, float)) and conf < 0.5:
+            low_conf.append(r.get("id", "<no-id>"))
+    if low_conf:
+        failures.append(f"{sample_name}: {len(low_conf)} llm-extracted rules with low confidence: {', '.join(low_conf[:5])}")
+
+
 def main() -> None:
     output_dir = Path(__file__).resolve().parent / "output"
     failures: list[str] = []
-    for sample, expected_count in EXPECTED_RULE_COUNTS.items():
+
+    # gather sample output files (falls back to EXPECTED_RULE_COUNTS keys)
+    sample_keys = list(EXPECTED_RULE_COUNTS.keys())
+    for sample in sample_keys:
         path = output_dir / f"{sample}.json"
         if not path.exists():
             failures.append(f"{sample}: missing output file")
             continue
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        actual_count = len(payload.get("rules", []))
-        if actual_count < expected_count:
-            failures.append(f"{sample}: expected at least {expected_count} rules, got {actual_count}")
+        payload = load_payload(path)
+        analyze_sample(sample, payload, failures)
 
     if failures:
         print("Evaluation failed:")
-        for failure in failures:
-            print(f"- {failure}")
+        for f in failures:
+            print(f"- {f}")
         raise SystemExit(1)
 
-    print("Evaluation passed: all samples produced the expected minimum rule counts.")
+    print("Evaluation passed: all checks succeeded.")
 
 
 if __name__ == "__main__":

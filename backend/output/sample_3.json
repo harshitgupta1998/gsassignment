@@ -99,7 +99,7 @@
         "type": "months",
         "value": 3,
         "unit": "months",
-        "related_fee": "annual service fee"
+        "related_to": "annual service fee"
       },
       "raw_text": "Early Termination Fee: If the policy is cancelled within the first 24 months, the applicant shall pay a fee equal to 3 months of the annual service fee.",
       "extraction": {
