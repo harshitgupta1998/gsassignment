@@ -1,0 +1,183 @@
+{
+  "source_document": "sample_1",
+  "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+  "title": "Eligibility Criteria",
+  "rules": [
+    {
+      "id": "rule_1",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "a",
+      "category": "eligibility",
+      "subject": "credit score",
+      "operator": ">=",
+      "value": 680,
+      "unit": "score",
+      "scope": "applicant",
+      "condition": null,
+      "exception": null,
+      "basis": null,
+      "raw_text": "Each applicant must have a credit score of at least 680.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "rule_2",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "b",
+      "category": "concentration_limit",
+      "subject": "maximum coverage amount",
+      "operator": "<=",
+      "value": 2000000,
+      "unit": "USD",
+      "scope": "policy",
+      "condition": null,
+      "exception": null,
+      "basis": null,
+      "raw_text": "The maximum coverage amount for any single policy shall not exceed $2,000,000.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "rule_3",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "c",
+      "category": "eligibility",
+      "subject": "credit score and portfolio value",
+      "operator": ">=",
+      "value": 680,
+      "unit": "score",
+      "scope": "applicant",
+      "condition": {
+        "max_portfolio_value_percentage": 15,
+        "credit_score_range": {
+          "min": 680,
+          "max": 700
+        }
+      },
+      "exception": null,
+      "basis": null,
+      "raw_text": "The applicant must have a credit score of at least 680, provided that no more than 15% of the total portfolio value may consist of policies for applicants with credit scores between 680 and 700.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "rule_4",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "d",
+      "category": "eligibility",
+      "subject": "debt-to-income ratio",
+      "operator": "<=",
+      "value": 40,
+      "unit": "percent",
+      "scope": "applicant",
+      "condition": {
+        "co_signer_credit_score": {
+          "operator": ">",
+          "value": 750
+        },
+        "alternative_ratio": {
+          "value": 45,
+          "unit": "percent"
+        }
+      },
+      "exception": null,
+      "basis": null,
+      "raw_text": "The debt-to-income ratio shall not exceed 40%, or 45% if the applicant has a co-signer with a credit score above 750.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "rule_5",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "e",
+      "category": "eligibility",
+      "subject": "payment overdue",
+      "operator": "not_allowed",
+      "value": 30,
+      "unit": "days",
+      "scope": "applicant",
+      "condition": {
+        "reference_date": "Review Date"
+      },
+      "exception": null,
+      "basis": null,
+      "raw_text": "The applicant must not have any payment more than 30 days overdue as of the Review Date.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "rule_6",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "f",
+      "category": "eligibility",
+      "subject": "residency",
+      "operator": "required",
+      "value": "United States or its territories",
+      "unit": null,
+      "scope": "applicant",
+      "condition": null,
+      "exception": null,
+      "basis": null,
+      "raw_text": "The applicant must reside in the United States or its territories.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "rule_7",
+      "source_document": "sample_1",
+      "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
+      "clause": "g",
+      "category": "eligibility",
+      "subject": "annual income",
+      "operator": ">=",
+      "value": 35000,
+      "unit": "USD",
+      "scope": "applicant",
+      "condition": {
+        "exception": {
+          "enrollment": "approved assistance program",
+          "minimum_income": {
+            "value": 25000,
+            "unit": "USD"
+          }
+        }
+      },
+      "exception": null,
+      "basis": null,
+      "raw_text": "No applicant shall have an annual income below $35,000, unless the applicant is enrolled in an approved assistance program, in which case the minimum income shall be $25,000.",
+      "extraction": {
+        "method": "llm",
+        "confidence": 1.0,
+        "notes": []
+      }
+    }
+  ],
+  "validation": {
+    "status": "passed",
+    "warnings": []
+  }
+}

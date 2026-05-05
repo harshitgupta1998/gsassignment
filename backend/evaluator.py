@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Any
 
 from validator import validate_rule
+import json
+from typing import Tuple
 
 
 EXPECTED_RULE_COUNTS = {
@@ -61,9 +63,45 @@ def analyze_sample(sample_name: str, payload: dict[str, Any], failures: list[str
         failures.append(f"{sample_name}: {len(low_conf)} llm-extracted rules with low confidence: {', '.join(low_conf[:5])}")
 
 
+def rule_key(rule: dict[str, Any]) -> Tuple[str, str, str, str]:
+    """Create a comparable key for a rule: (subject, operator, value_json, unit)"""
+    subj = (rule.get("subject") or "").strip().lower()
+    op = (rule.get("operator") or "").strip().lower()
+    val = rule.get("value")
+    try:
+        # JSON-stable representation for value (handles list/number/string/null)
+        val_json = json.dumps(val, sort_keys=True, separators=(",", ":"))
+    except Exception:
+        val_json = str(val)
+    unit = (rule.get("unit") or "").strip().lower()
+    return subj, op, val_json, unit
+
+
+def evaluate_against_ground_truth(sample_name: str, payload: dict[str, Any]) -> Tuple[int, int, int]:
+    """Return (tp, fp, fn) when ground truth is available under backend/ground_truth/{sample}.json
+    If no ground truth file, returns (-1, -1, -1).
+    """
+    gt_path = Path(__file__).resolve().parent / "ground_truth" / f"{sample_name}.json"
+    if not gt_path.exists():
+        return -1, -1, -1
+    gt = json.loads(gt_path.read_text(encoding="utf-8"))
+    gold_rules = gt.get("rules", [])
+    pred_rules = payload.get("rules", [])
+
+    gold_keys = {rule_key(r) for r in gold_rules}
+    pred_keys = {rule_key(r) for r in pred_rules}
+
+    tp = len(pred_keys & gold_keys)
+    fp = len(pred_keys - gold_keys)
+    fn = len(gold_keys - pred_keys)
+    return tp, fp, fn
+
+
 def main() -> None:
     output_dir = Path(__file__).resolve().parent / "output"
     failures: list[str] = []
+    total_tp = total_fp = total_fn = 0
+    evaluated_samples = 0
 
     # gather sample output files (falls back to EXPECTED_RULE_COUNTS keys)
     sample_keys = list(EXPECTED_RULE_COUNTS.keys())
@@ -74,6 +112,16 @@ def main() -> None:
             continue
         payload = load_payload(path)
         analyze_sample(sample, payload, failures)
+        tp, fp, fn = evaluate_against_ground_truth(sample, payload)
+        if tp >= 0:
+            evaluated_samples += 1
+            total_tp += tp
+            total_fp += fp
+            total_fn += fn
+            prec = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
+            rec = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
+            f1 = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+            print(f"After {evaluated_samples} sample(s): micro-precision={prec:.3f}, micro-recall={rec:.3f}, micro-f1={f1:.3f}")
 
     if failures:
         print("Evaluation failed:")
