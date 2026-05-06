@@ -1,1 +1,12 @@
-openai>=1.30.0
+# External dependencies
+openai>=1.0.0
+
+# Standard library modules (built-in with Python 3.6+, listed for reference/clarity)
+argparse
+json
+os
+pathlib
+re
+typing
+dataclasses
+decimal
