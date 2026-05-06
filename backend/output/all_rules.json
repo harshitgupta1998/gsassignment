@@ -31,8 +31,8 @@
           "source_document": "sample_1",
           "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
           "clause": "b",
-          "category": "concentration_limit",
-          "subject": "maximum coverage amount",
+          "category": "eligibility",
+          "subject": "coverage amount",
           "operator": "<=",
           "value": 2000000,
           "unit": "USD",
@@ -54,16 +54,17 @@
           "clause": "c",
           "category": "eligibility",
           "subject": "credit score and portfolio value",
-          "operator": ">=",
-          "value": 680,
+          "operator": "between",
+          "value": [
+            680,
+            700
+          ],
           "unit": "score",
           "scope": "applicant",
           "condition": {
-            "max_portfolio_value_percentage": 15,
-            "credit_score_range": {
-              "min": 680,
-              "max": 700
-            }
+            "subject": "portfolio value percentage",
+            "operator": "<=",
+            "value": 15
           },
           "exception": null,
           "basis": null,
@@ -86,16 +87,15 @@
           "unit": "percent",
           "scope": "applicant",
           "condition": {
-            "co_signer_credit_score": {
-              "operator": ">",
-              "value": 750
-            },
-            "alternative_ratio": {
-              "value": 45,
-              "unit": "percent"
-            }
+            "subject": "co-signer credit score",
+            "operator": ">",
+            "value": 750
           },
-          "exception": null,
+          "exception": {
+            "subject": "debt-to-income ratio",
+            "operator": "<=",
+            "value": 45
+          },
           "basis": null,
           "raw_text": "The debt-to-income ratio shall not exceed 40%, or 45% if the applicant has a co-signer with a credit score above 750.",
           "extraction": {
@@ -111,12 +111,14 @@
           "clause": "e",
           "category": "eligibility",
           "subject": "payment overdue",
-          "operator": "not_allowed",
+          "operator": "<=",
           "value": 30,
           "unit": "days",
           "scope": "applicant",
           "condition": {
-            "reference_date": "Review Date"
+            "subject": "Review Date",
+            "operator": null,
+            "value": null
           },
           "exception": null,
           "basis": null,
@@ -160,15 +162,15 @@
           "unit": "USD",
           "scope": "applicant",
           "condition": {
-            "exception": {
-              "enrollment": "approved assistance program",
-              "minimum_income": {
-                "value": 25000,
-                "unit": "USD"
-              }
-            }
+            "subject": "assistance program enrollment",
+            "operator": "required",
+            "value": null
           },
-          "exception": null,
+          "exception": {
+            "subject": "minimum income",
+            "operator": ">=",
+            "value": 25000
+          },
           "basis": null,
           "raw_text": "No applicant shall have an annual income below $35,000, unless the applicant is enrolled in an approved assistance program, in which case the minimum income shall be $25,000.",
           "extraction": {
@@ -179,8 +181,10 @@
         }
       ],
       "validation": {
-        "status": "passed",
-        "warnings": []
+        "status": "passed_with_warnings",
+        "warnings": [
+          "rule_3: Unexpected operator: between"
+        ]
       }
     },
     {
@@ -194,14 +198,14 @@
           "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
           "clause": "i",
           "category": "concentration_limit",
-          "subject": "portfolio value from single state",
+          "subject": "total portfolio value from any single state",
           "operator": "<=",
           "value": 25,
           "unit": "percent",
           "scope": "portfolio",
           "condition": null,
           "exception": null,
-          "basis": "total portfolio value",
+          "basis": null,
           "raw_text": "No more than 25% of the total portfolio value shall consist of policies originating from any single state.",
           "extraction": {
             "method": "llm",
@@ -215,20 +219,18 @@
           "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
           "clause": "ii",
           "category": "concentration_limit",
-          "subject": "portfolio value with high coverage amount",
+          "subject": "total portfolio value with coverage amount exceeding $1,500,000",
           "operator": "<=",
           "value": 10,
           "unit": "percent",
           "scope": "portfolio",
           "condition": {
-            "coverage_amount": {
-              "operator": ">",
-              "value": 1500000,
-              "unit": "USD"
-            }
+            "subject": "coverage amount",
+            "operator": ">",
+            "value": 1500000
           },
           "exception": null,
-          "basis": "total portfolio value",
+          "basis": null,
           "raw_text": "No more than 10% of the total portfolio value shall consist of policies with a coverage amount exceeding $1,500,000.",
           "extraction": {
             "method": "llm",
@@ -242,7 +244,7 @@
           "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
           "clause": "iii",
           "category": "concentration_limit",
-          "subject": "weighted average credit score",
+          "subject": "weighted average credit score across all policies",
           "operator": ">=",
           "value": 720,
           "unit": "score",
@@ -263,20 +265,18 @@
           "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
           "clause": "iv",
           "category": "concentration_limit",
-          "subject": "portfolio value with young applicants",
+          "subject": "total portfolio value from policies where the primary applicant is under 25 years of age",
           "operator": "<=",
           "value": 5,
           "unit": "percent",
           "scope": "portfolio",
           "condition": {
-            "applicant_age": {
-              "operator": "<",
-              "value": 25,
-              "unit": "years"
-            }
+            "subject": "primary applicant age",
+            "operator": "<",
+            "value": 25
           },
           "exception": null,
-          "basis": "total portfolio value",
+          "basis": null,
           "raw_text": "No more than 5% of the total portfolio value shall consist of policies where the primary applicant is under 25 years of age.",
           "extraction": {
             "method": "llm",
@@ -317,7 +317,7 @@
       "title": "Fee Schedule",
       "rules": [
         {
-          "id": "rule_1",
+          "id": "processing_fee_001",
           "source_document": "sample_3",
           "section": "SECTION 12.2 FEES AND CHARGES",
           "clause": "a",
@@ -333,12 +333,12 @@
           "raw_text": "Processing Fee: A one-time fee of $500 per application, due upon submission.",
           "extraction": {
             "method": "llm",
-            "confidence": "1.0",
+            "confidence": 1.0,
             "notes": []
           }
         },
         {
-          "id": "rule_2",
+          "id": "annual_service_fee_002",
           "source_document": "sample_3",
           "section": "SECTION 12.2 FEES AND CHARGES",
           "clause": "b",
@@ -349,106 +349,103 @@
           "unit": "percent",
           "scope": "policy",
           "condition": {
-            "type": "per annum",
-            "subject": "outstanding coverage amount"
+            "subject": "coverage amount",
+            "operator": ">",
+            "value": 0
           },
           "exception": null,
-          "basis": null,
+          "basis": "per annum of the outstanding coverage amount",
           "raw_text": "Annual Service Fee: 0.35% per annum of the outstanding coverage amount, payable monthly.",
           "extraction": {
             "method": "llm",
-            "confidence": "1.0",
+            "confidence": 1.0,
             "notes": []
           }
         },
         {
-          "id": "rule_3",
+          "id": "late_payment_fee_003",
           "source_document": "sample_3",
           "section": "SECTION 12.2 FEES AND CHARGES",
           "clause": "c",
           "category": "fee",
           "subject": "Late Payment Fee",
-          "operator": ">",
-          "value": 15,
-          "unit": "days",
+          "operator": "between",
+          "value": [
+            25,
+            500
+          ],
+          "unit": "USD",
           "scope": "payment",
           "condition": {
-            "type": "overdue",
-            "subject": "scheduled payment"
+            "subject": "scheduled payment",
+            "operator": ">",
+            "value": 15
           },
-          "exception": {
-            "minimum_fee": 25,
-            "maximum_fee": 500
-          },
-          "basis": {
-            "type": "percentage",
-            "value": 2,
-            "unit": "percent"
-          },
+          "exception": null,
+          "basis": "2% of the overdue amount",
           "raw_text": "Late Payment Fee: If any scheduled payment is more than 15 days overdue, a fee of 2% of the overdue amount shall apply, subject to a minimum of $25 and a maximum of $500.",
           "extraction": {
             "method": "llm",
-            "confidence": "1.0",
+            "confidence": 1.0,
             "notes": []
           }
         },
         {
-          "id": "rule_4",
+          "id": "early_termination_fee_004",
           "source_document": "sample_3",
           "section": "SECTION 12.2 FEES AND CHARGES",
           "clause": "d",
           "category": "fee",
           "subject": "Early Termination Fee",
-          "operator": "<",
-          "value": 24,
-          "unit": "months",
+          "operator": "=",
+          "value": "3 months of the annual service fee",
+          "unit": "USD",
           "scope": "policy",
           "condition": {
-            "type": "cancellation",
-            "subject": "policy"
+            "subject": "policy cancellation",
+            "operator": "<=",
+            "value": 24
           },
           "exception": null,
-          "basis": {
-            "type": "months",
-            "value": 3,
-            "unit": "months",
-            "related_to": "annual service fee"
-          },
+          "basis": null,
           "raw_text": "Early Termination Fee: If the policy is cancelled within the first 24 months, the applicant shall pay a fee equal to 3 months of the annual service fee.",
           "extraction": {
             "method": "llm",
-            "confidence": "1.0",
+            "confidence": 1.0,
             "notes": []
           }
         },
         {
-          "id": "rule_5",
+          "id": "reinstatement_fee_005",
           "source_document": "sample_3",
           "section": "SECTION 12.2 FEES AND CHARGES",
           "clause": "e",
           "category": "fee",
           "subject": "Reinstatement Fee",
-          "operator": ">",
-          "value": 60,
-          "unit": "days",
+          "operator": "=",
+          "value": 250,
+          "unit": "USD",
           "scope": "policy",
           "condition": {
-            "type": "lapse",
-            "subject": "policy"
+            "subject": "policy lapse",
+            "operator": ">",
+            "value": 60
           },
           "exception": null,
           "basis": null,
           "raw_text": "Reinstatement Fee: $250 if the policy is reinstated after a lapse of more than 60 days.",
           "extraction": {
             "method": "llm",
-            "confidence": "1.0",
+            "confidence": 1.0,
             "notes": []
           }
         }
       ],
       "validation": {
-        "status": "passed",
-        "warnings": []
+        "status": "passed_with_warnings",
+        "warnings": [
+          "late_payment_fee_003: Unexpected operator: between"
+        ]
       }
     }
   ],
@@ -479,8 +476,8 @@
       "source_document": "sample_1",
       "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
       "clause": "b",
-      "category": "concentration_limit",
-      "subject": "maximum coverage amount",
+      "category": "eligibility",
+      "subject": "coverage amount",
       "operator": "<=",
       "value": 2000000,
       "unit": "USD",
@@ -502,16 +499,17 @@
       "clause": "c",
       "category": "eligibility",
       "subject": "credit score and portfolio value",
-      "operator": ">=",
-      "value": 680,
+      "operator": "between",
+      "value": [
+        680,
+        700
+      ],
       "unit": "score",
       "scope": "applicant",
       "condition": {
-        "max_portfolio_value_percentage": 15,
-        "credit_score_range": {
-          "min": 680,
-          "max": 700
-        }
+        "subject": "portfolio value percentage",
+        "operator": "<=",
+        "value": 15
       },
       "exception": null,
       "basis": null,
@@ -534,16 +532,15 @@
       "unit": "percent",
       "scope": "applicant",
       "condition": {
-        "co_signer_credit_score": {
-          "operator": ">",
-          "value": 750
-        },
-        "alternative_ratio": {
-          "value": 45,
-          "unit": "percent"
-        }
+        "subject": "co-signer credit score",
+        "operator": ">",
+        "value": 750
       },
-      "exception": null,
+      "exception": {
+        "subject": "debt-to-income ratio",
+        "operator": "<=",
+        "value": 45
+      },
       "basis": null,
       "raw_text": "The debt-to-income ratio shall not exceed 40%, or 45% if the applicant has a co-signer with a credit score above 750.",
       "extraction": {
@@ -559,12 +556,14 @@
       "clause": "e",
       "category": "eligibility",
       "subject": "payment overdue",
-      "operator": "not_allowed",
+      "operator": "<=",
       "value": 30,
       "unit": "days",
       "scope": "applicant",
       "condition": {
-        "reference_date": "Review Date"
+        "subject": "Review Date",
+        "operator": null,
+        "value": null
       },
       "exception": null,
       "basis": null,
@@ -608,15 +607,15 @@
       "unit": "USD",
       "scope": "applicant",
       "condition": {
-        "exception": {
-          "enrollment": "approved assistance program",
-          "minimum_income": {
-            "value": 25000,
-            "unit": "USD"
-          }
-        }
+        "subject": "assistance program enrollment",
+        "operator": "required",
+        "value": null
       },
-      "exception": null,
+      "exception": {
+        "subject": "minimum income",
+        "operator": ">=",
+        "value": 25000
+      },
       "basis": null,
       "raw_text": "No applicant shall have an annual income below $35,000, unless the applicant is enrolled in an approved assistance program, in which case the minimum income shall be $25,000.",
       "extraction": {
@@ -631,14 +630,14 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "i",
       "category": "concentration_limit",
-      "subject": "portfolio value from single state",
+      "subject": "total portfolio value from any single state",
       "operator": "<=",
       "value": 25,
       "unit": "percent",
       "scope": "portfolio",
       "condition": null,
       "exception": null,
-      "basis": "total portfolio value",
+      "basis": null,
       "raw_text": "No more than 25% of the total portfolio value shall consist of policies originating from any single state.",
       "extraction": {
         "method": "llm",
@@ -652,20 +651,18 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "ii",
       "category": "concentration_limit",
-      "subject": "portfolio value with high coverage amount",
+      "subject": "total portfolio value with coverage amount exceeding $1,500,000",
       "operator": "<=",
       "value": 10,
       "unit": "percent",
       "scope": "portfolio",
       "condition": {
-        "coverage_amount": {
-          "operator": ">",
-          "value": 1500000,
-          "unit": "USD"
-        }
+        "subject": "coverage amount",
+        "operator": ">",
+        "value": 1500000
       },
       "exception": null,
-      "basis": "total portfolio value",
+      "basis": null,
       "raw_text": "No more than 10% of the total portfolio value shall consist of policies with a coverage amount exceeding $1,500,000.",
       "extraction": {
         "method": "llm",
@@ -679,7 +676,7 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "iii",
       "category": "concentration_limit",
-      "subject": "weighted average credit score",
+      "subject": "weighted average credit score across all policies",
       "operator": ">=",
       "value": 720,
       "unit": "score",
@@ -700,20 +697,18 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "iv",
       "category": "concentration_limit",
-      "subject": "portfolio value with young applicants",
+      "subject": "total portfolio value from policies where the primary applicant is under 25 years of age",
       "operator": "<=",
       "value": 5,
       "unit": "percent",
       "scope": "portfolio",
       "condition": {
-        "applicant_age": {
-          "operator": "<",
-          "value": 25,
-          "unit": "years"
-        }
+        "subject": "primary applicant age",
+        "operator": "<",
+        "value": 25
       },
       "exception": null,
-      "basis": "total portfolio value",
+      "basis": null,
       "raw_text": "No more than 5% of the total portfolio value shall consist of policies where the primary applicant is under 25 years of age.",
       "extraction": {
         "method": "llm",
@@ -743,7 +738,7 @@
       }
     },
     {
-      "id": "rule_1",
+      "id": "processing_fee_001",
       "source_document": "sample_3",
       "section": "SECTION 12.2 FEES AND CHARGES",
       "clause": "a",
@@ -759,12 +754,12 @@
       "raw_text": "Processing Fee: A one-time fee of $500 per application, due upon submission.",
       "extraction": {
         "method": "llm",
-        "confidence": "1.0",
+        "confidence": 1.0,
         "notes": []
       }
     },
     {
-      "id": "rule_2",
+      "id": "annual_service_fee_002",
       "source_document": "sample_3",
       "section": "SECTION 12.2 FEES AND CHARGES",
       "clause": "b",
@@ -775,99 +770,94 @@
       "unit": "percent",
       "scope": "policy",
       "condition": {
-        "type": "per annum",
-        "subject": "outstanding coverage amount"
+        "subject": "coverage amount",
+        "operator": ">",
+        "value": 0
       },
       "exception": null,
-      "basis": null,
+      "basis": "per annum of the outstanding coverage amount",
       "raw_text": "Annual Service Fee: 0.35% per annum of the outstanding coverage amount, payable monthly.",
       "extraction": {
         "method": "llm",
-        "confidence": "1.0",
+        "confidence": 1.0,
         "notes": []
       }
     },
     {
-      "id": "rule_3",
+      "id": "late_payment_fee_003",
       "source_document": "sample_3",
       "section": "SECTION 12.2 FEES AND CHARGES",
       "clause": "c",
       "category": "fee",
       "subject": "Late Payment Fee",
-      "operator": ">",
-      "value": 15,
-      "unit": "days",
+      "operator": "between",
+      "value": [
+        25,
+        500
+      ],
+      "unit": "USD",
       "scope": "payment",
       "condition": {
-        "type": "overdue",
-        "subject": "scheduled payment"
+        "subject": "scheduled payment",
+        "operator": ">",
+        "value": 15
       },
-      "exception": {
-        "minimum_fee": 25,
-        "maximum_fee": 500
-      },
-      "basis": {
-        "type": "percentage",
-        "value": 2,
-        "unit": "percent"
-      },
+      "exception": null,
+      "basis": "2% of the overdue amount",
       "raw_text": "Late Payment Fee: If any scheduled payment is more than 15 days overdue, a fee of 2% of the overdue amount shall apply, subject to a minimum of $25 and a maximum of $500.",
       "extraction": {
         "method": "llm",
-        "confidence": "1.0",
+        "confidence": 1.0,
         "notes": []
       }
     },
     {
-      "id": "rule_4",
+      "id": "early_termination_fee_004",
       "source_document": "sample_3",
       "section": "SECTION 12.2 FEES AND CHARGES",
       "clause": "d",
       "category": "fee",
       "subject": "Early Termination Fee",
-      "operator": "<",
-      "value": 24,
-      "unit": "months",
+      "operator": "=",
+      "value": "3 months of the annual service fee",
+      "unit": "USD",
       "scope": "policy",
       "condition": {
-        "type": "cancellation",
-        "subject": "policy"
+        "subject": "policy cancellation",
+        "operator": "<=",
+        "value": 24
       },
       "exception": null,
-      "basis": {
-        "type": "months",
-        "value": 3,
-        "unit": "months",
-        "related_to": "annual service fee"
-      },
+      "basis": null,
       "raw_text": "Early Termination Fee: If the policy is cancelled within the first 24 months, the applicant shall pay a fee equal to 3 months of the annual service fee.",
       "extraction": {
         "method": "llm",
-        "confidence": "1.0",
+        "confidence": 1.0,
         "notes": []
       }
     },
     {
-      "id": "rule_5",
+      "id": "reinstatement_fee_005",
       "source_document": "sample_3",
       "section": "SECTION 12.2 FEES AND CHARGES",
       "clause": "e",
       "category": "fee",
       "subject": "Reinstatement Fee",
-      "operator": ">",
-      "value": 60,
-      "unit": "days",
+      "operator": "=",
+      "value": 250,
+      "unit": "USD",
       "scope": "policy",
       "condition": {
-        "type": "lapse",
-        "subject": "policy"
+        "subject": "policy lapse",
+        "operator": ">",
+        "value": 60
       },
       "exception": null,
       "basis": null,
       "raw_text": "Reinstatement Fee: $250 if the policy is reinstated after a lapse of more than 60 days.",
       "extraction": {
         "method": "llm",
-        "confidence": "1.0",
+        "confidence": 1.0,
         "notes": []
       }
     }

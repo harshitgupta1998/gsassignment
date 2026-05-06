@@ -9,14 +9,14 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "i",
       "category": "concentration_limit",
-      "subject": "portfolio value from single state",
+      "subject": "total portfolio value from any single state",
       "operator": "<=",
       "value": 25,
       "unit": "percent",
       "scope": "portfolio",
       "condition": null,
       "exception": null,
-      "basis": "total portfolio value",
+      "basis": null,
       "raw_text": "No more than 25% of the total portfolio value shall consist of policies originating from any single state.",
       "extraction": {
         "method": "llm",
@@ -30,20 +30,18 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "ii",
       "category": "concentration_limit",
-      "subject": "portfolio value with high coverage amount",
+      "subject": "total portfolio value with coverage amount exceeding $1,500,000",
       "operator": "<=",
       "value": 10,
       "unit": "percent",
       "scope": "portfolio",
       "condition": {
-        "coverage_amount": {
-          "operator": ">",
-          "value": 1500000,
-          "unit": "USD"
-        }
+        "subject": "coverage amount",
+        "operator": ">",
+        "value": 1500000
       },
       "exception": null,
-      "basis": "total portfolio value",
+      "basis": null,
       "raw_text": "No more than 10% of the total portfolio value shall consist of policies with a coverage amount exceeding $1,500,000.",
       "extraction": {
         "method": "llm",
@@ -57,7 +55,7 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "iii",
       "category": "concentration_limit",
-      "subject": "weighted average credit score",
+      "subject": "weighted average credit score across all policies",
       "operator": ">=",
       "value": 720,
       "unit": "score",
@@ -78,20 +76,18 @@
       "section": "SECTION 7.3 PORTFOLIO CONCENTRATION LIMITS",
       "clause": "iv",
       "category": "concentration_limit",
-      "subject": "portfolio value with young applicants",
+      "subject": "total portfolio value from policies where the primary applicant is under 25 years of age",
       "operator": "<=",
       "value": 5,
       "unit": "percent",
       "scope": "portfolio",
       "condition": {
-        "applicant_age": {
-          "operator": "<",
-          "value": 25,
-          "unit": "years"
-        }
+        "subject": "primary applicant age",
+        "operator": "<",
+        "value": 25
       },
       "exception": null,
-      "basis": "total portfolio value",
+      "basis": null,
       "raw_text": "No more than 5% of the total portfolio value shall consist of policies where the primary applicant is under 25 years of age.",
       "extraction": {
         "method": "llm",

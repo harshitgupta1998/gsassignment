@@ -29,8 +29,8 @@
       "source_document": "sample_1",
       "section": "SECTION 5.1 ELIGIBILITY CRITERIA",
       "clause": "b",
-      "category": "concentration_limit",
-      "subject": "maximum coverage amount",
+      "category": "eligibility",
+      "subject": "coverage amount",
       "operator": "<=",
       "value": 2000000,
       "unit": "USD",
@@ -52,16 +52,17 @@
       "clause": "c",
       "category": "eligibility",
       "subject": "credit score and portfolio value",
-      "operator": ">=",
-      "value": 680,
+      "operator": "between",
+      "value": [
+        680,
+        700
+      ],
       "unit": "score",
       "scope": "applicant",
       "condition": {
-        "max_portfolio_value_percentage": 15,
-        "credit_score_range": {
-          "min": 680,
-          "max": 700
-        }
+        "subject": "portfolio value percentage",
+        "operator": "<=",
+        "value": 15
       },
       "exception": null,
       "basis": null,
@@ -84,16 +85,15 @@
       "unit": "percent",
       "scope": "applicant",
       "condition": {
-        "co_signer_credit_score": {
-          "operator": ">",
-          "value": 750
-        },
-        "alternative_ratio": {
-          "value": 45,
-          "unit": "percent"
-        }
+        "subject": "co-signer credit score",
+        "operator": ">",
+        "value": 750
       },
-      "exception": null,
+      "exception": {
+        "subject": "debt-to-income ratio",
+        "operator": "<=",
+        "value": 45
+      },
       "basis": null,
       "raw_text": "The debt-to-income ratio shall not exceed 40%, or 45% if the applicant has a co-signer with a credit score above 750.",
       "extraction": {
@@ -109,12 +109,14 @@
       "clause": "e",
       "category": "eligibility",
       "subject": "payment overdue",
-      "operator": "not_allowed",
+      "operator": "<=",
       "value": 30,
       "unit": "days",
       "scope": "applicant",
       "condition": {
-        "reference_date": "Review Date"
+        "subject": "Review Date",
+        "operator": null,
+        "value": null
       },
       "exception": null,
       "basis": null,
@@ -158,15 +160,15 @@
       "unit": "USD",
       "scope": "applicant",
       "condition": {
-        "exception": {
-          "enrollment": "approved assistance program",
-          "minimum_income": {
-            "value": 25000,
-            "unit": "USD"
-          }
-        }
+        "subject": "assistance program enrollment",
+        "operator": "required",
+        "value": null
       },
-      "exception": null,
+      "exception": {
+        "subject": "minimum income",
+        "operator": ">=",
+        "value": 25000
+      },
       "basis": null,
       "raw_text": "No applicant shall have an annual income below $35,000, unless the applicant is enrolled in an approved assistance program, in which case the minimum income shall be $25,000.",
       "extraction": {
@@ -177,7 +179,9 @@
     }
   ],
   "validation": {
-    "status": "passed",
-    "warnings": []
+    "status": "passed_with_warnings",
+    "warnings": [
+      "rule_3: Unexpected operator: between"
+    ]
   }
 }

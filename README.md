@@ -75,6 +75,34 @@ backend/output/sample_1.json
 backend/output/sample_2.json
 backend/output/sample_3.json
 backend/output/all_rules.json
+
+Samples directory
+-----------------
+
+The sample source texts are now stored as individual text files in `backend/samples/`.
+This makes it easier to add or edit samples without touching Python code. The project will load these files at import-time via `backend/samples.py` and expose them as the `SAMPLES` mapping used by `extract.py`.
+
+To add a new sample:
+
+1. Create a file named `backend/samples/sample_N.txt` (where `sample_N` is the key you will use).
+2. Update `backend/samples.py` if you want a different title, section, or category for the new key (the file loader expects a filename that matches the `SAMPLES` key).
+
+Run extraction for a single sample:
+
+```bash
+python3 backend/extract.py --sample sample_1
+```
+
+Run the helper that performs extraction then serves the frontend (creates `.server.pid`):
+
+```bash
+./run.sh --mode hybrid --port 8000
+```
+
+Notes
+-----
+- Keep `.env` out of version control — there is an `.env.example` showing the expected variables (copy it to `.env` when you need to run LLM mode).
+- For meaningful evaluation, replace `backend/ground_truth/*.json` with human-reviewed ground-truth files rather than the extractor outputs.
 ```
 
 ## Approach
